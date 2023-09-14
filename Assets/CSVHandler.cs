@@ -27,9 +27,10 @@ public class CSVHandler {
         tw = new StreamWriter(fileName, true);
 
         for(int i = 0; i < elevationData.Length; i++) {
-            for(int j = 0; j < elevationData[i].Length; j++)
+            for(int j = 0; j < elevationData[i].Length; j++) {
                 tw.WriteLine(elevationData[i][j].toString());
             }
+        }
         tw.Close();
     }
 
