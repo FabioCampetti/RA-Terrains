@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class SampleTerrainGeneration : MonoBehaviour
 {
-    public int width = 256; //x-axis of the terrain
-    public int height = 256; //z-axis
+    public int width = 10000; //x-axis of the terrain
+    public int height = 10000; //z-axis
 
-    public int depth = 8747; //y-axis
+    public int depth = 874; //y-axis
 
     public float scale = 20f;
 
@@ -21,31 +21,30 @@ public class SampleTerrainGeneration : MonoBehaviour
     private void Update()
     {
         Terrain terrain = GetComponent<Terrain>();
-        terrain.terrainData = GenerateTerrain(terrain.terrainData);
+//        terrain.terrainData = GenerateTerrain(terrain.terrainData);
     }
 
     TerrainData GenerateTerrain (TerrainData terrainData)
     {
-        terrainData.heightmapResolution = 257;
+        terrainData.heightmapResolution = 1025;
         terrainData.size = new Vector3(width, depth, height);
 
         CSVHandler csvHandler = new CSVHandler("everestElevations", 257);
         ElevationResult[,] elevations = csvHandler.ReadCSV();
 
         
-        terrainData.SetHeights(0, 0, calculateHeigths(elevations));
+        terrainData.SetHeights(0, 0, GenerateHeights());
         return terrainData;
     }
 
     float[,] GenerateHeights()
     {
-        float[,] heights = new float[257, 257];
-        for(int x = 0; x < 257; x++)
+        float[,] heights = new float[1025, 1025];
+        for(int x = 0; x < 1025; x++)
         {
-            for (int y = 0; y < 257; y++)
+            for (int y = 0; y < 1025; y++)
             {
                 heights[x, y] = CalculateHeight(x, y);
-                Debug.Log(heights[x, y]);
             }
         }
 

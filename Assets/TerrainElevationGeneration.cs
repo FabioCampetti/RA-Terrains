@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 using System;
+using System.Globalization;
 using System.Linq;
 
 public class TerrainElevationGeneration : MonoBehaviour {
@@ -9,12 +11,12 @@ public class TerrainElevationGeneration : MonoBehaviour {
 
      public int terrainSize = 10000;
 
-     public int heightmapResolution = 1025;
+     public int heightmapResolution = 513;
      private List<Location> vertexCoordinatesList;
 
      private Location location;
      public float highestElevation;
-
+     public float lowestElevation;
 
     private CSVHandler csvHandler;
 
@@ -24,7 +26,7 @@ public class TerrainElevationGeneration : MonoBehaviour {
         double lat = 27.98865069515548;
         double lon = 86.92544716876068;
         location = new Location(lat, lon);
-        csvHandler = new CSVHandler("everestElevations", heightmapResolution);
+        csvHandler = new CSVHandler("everest512Elevations", heightmapResolution-1);
         //generateElevations();
         generateTerrain(); 
     }
@@ -52,26 +54,47 @@ public class TerrainElevationGeneration : MonoBehaviour {
         terrainData.heightmapResolution = heightmapResolution;
 
         highestElevation = (float) csvHandler.highestElevation;
-        terrainData.size = new Vector3(10000, highestElevation, 10000);
-        
+        lowestElevation = (float) csvHandler.lowestElevation;
+        terrainData.size = new Vector3(terrainSize, highestElevation, terrainSize);
+
         terrainData.SetHeights(0, 0, calculateHeigths(elevations));
-        Debug.Log(terrainData.heightmapResolution);
+    }
+
+    private float[,] getHeigthsFromImport() {
+        StreamReader reader = new StreamReader(Application.dataPath + "/terrainData.txt");
+
+        float[,]    heigths = new float[heightmapResolution, heightmapResolution];
+        for (int i = 0; i < heightmapResolution && !reader.EndOfStream ; i++) {
+            for (int j = 0; j < heightmapResolution && !reader.EndOfStream; j++) {
+                    string line = reader.ReadLine();
+                    heigths[i,j] = float.Parse(line);
+            }
+        }
+        return heigths;
     }
 
     private float[,] calculateHeigths(ElevationResult[,] elevations) {
+
         float[,] newElevations = new float[heightmapResolution, heightmapResolution];
         for (int i = 0; i < heightmapResolution; i++) {
             for (int j = 0; j < heightmapResolution; j++) {
-                if (elevations[i,j] != null) {
-                    newElevations[j, i] = getScaleHeigth(elevations[j,i]);
-                }
+                    if (i == heightmapResolution - 1 || j == heightmapResolution - 1) {
+                        if (i == heightmapResolution - 1) {
+                            newElevations[i, j] = newElevations[i-1, j];
+                        } else {
+                            newElevations[i, j] = newElevations[i, j-1];
+                        }
+                    } else {
+                        newElevations[i, j] = getScaleHeigth(elevations[i,j]);
+                    }
             }
         }
         return newElevations;
     }
 
     private float getScaleHeigth(ElevationResult elevationResult) {
-        float result = (float) (elevationResult.elevation /highestElevation);
+        float elevation = (float) elevationResult.elevation;
+        float result = (elevation - lowestElevation)/(highestElevation - lowestElevation);
         return result;
     }
 

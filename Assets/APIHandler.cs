@@ -19,30 +19,16 @@ public class APIHandler {
 
     public ElevationResult[][] getElevations() {
         ElevationResult[][] allElevations = new ElevationResult[terrainSize][];
-        ElevationResult[] leftElevations = generateRowOrColumnElevations(vertexLocationsList[0], vertexLocationsList[1], 180.0);
-        ElevationResult[] rightElevations = generateRowOrColumnElevations(vertexLocationsList[2], vertexLocationsList[3], 180.0);
+        ElevationResult[] leftElevations = elevationsBetweenCoordinates(vertexLocationsList[0], vertexLocationsList[1]);
+        ElevationResult[] rightElevations = elevationsBetweenCoordinates(vertexLocationsList[2], vertexLocationsList[3]);
         for(int i = 0; i < terrainSize; i++) {
-            allElevations[i] = generateRowOrColumnElevations(leftElevations[i].location, rightElevations[i].location, 90.0);
+            allElevations[i] = elevationsBetweenCoordinates(leftElevations[i].location, rightElevations[i].location);
         }
         return allElevations;
     }
 
-    private ElevationResult[] generateRowOrColumnElevations(Location firstLocation, Location finalLocation, double bearing) {
-        ElevationResult[] elevations = new ElevationResult[0];
-        Location initialLocation = firstLocation;
-        for (int i = 0; i < 2; i++) {
-            Location middleLocation = Location.calculateNewCoordinates(initialLocation, bearing, terrainSize/3);
-            ElevationResult[] intermediateElevations = elevationsBetweenCoordinates(initialLocation, middleLocation, 343);
-            elevations = elevations.Concat(intermediateElevations).ToArray();
-            elevations = elevations.SkipLast(1).ToArray();
-            initialLocation = middleLocation;
-        }
-        elevations = elevations.Concat(elevationsBetweenCoordinates(initialLocation,finalLocation, 341)).ToArray();
-        return elevations;        
-    }
-
-    private ElevationResult[] elevationsBetweenCoordinates(Location firstCoordinate, Location secondCoordinate, int distPoints) {
-         string url = $"https://maps.googleapis.com/maps/api/elevation/json?path={firstCoordinate.lat},{firstCoordinate.lng}|{secondCoordinate.lat},{secondCoordinate.lng}&samples={distPoints}&key={apiKey}";
+    private ElevationResult[] elevationsBetweenCoordinates(Location firstCoordinate, Location secondCoordinate) {
+         string url = $"https://maps.googleapis.com/maps/api/elevation/json?path={firstCoordinate.lat},{firstCoordinate.lng}|{secondCoordinate.lat},{secondCoordinate.lng}&samples=512&key={apiKey}";
          
          using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
             webRequest.SendWebRequest();
