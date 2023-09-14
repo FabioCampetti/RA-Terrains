@@ -18,6 +18,8 @@ public class TerrainElevationGeneration : MonoBehaviour {
      public float highestElevation;
      public float lowestElevation;
 
+     private Terrain terrain;
+
     private CSVHandler csvHandler;
 
     // Start is called before the first frame update
@@ -28,7 +30,10 @@ public class TerrainElevationGeneration : MonoBehaviour {
         location = new Location(lat, lon);
         csvHandler = new CSVHandler("everest512Elevations", heightmapResolution-1);
         //generateElevations();
-        generateTerrain(); 
+        generateTerrain();
+        ExportTerrain exporter= new ExportTerrain(terrain);
+        exporter.Export();
+ 
     }
 
     // Update is called once per frame
@@ -46,7 +51,7 @@ public class TerrainElevationGeneration : MonoBehaviour {
 
     private void generateTerrain() {
         
-        Terrain terrain = GetComponent<Terrain>();
+        terrain = GetComponent<Terrain>();
         TerrainData terrainData = terrain.terrainData;
 
 

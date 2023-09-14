@@ -43,6 +43,7 @@
      <Compile Include="Assets/ElevationResult.cs" />
      <Compile Include="Assets/CSVHandler.cs" />
      <Compile Include="Assets/Location.cs" />
+     <Compile Include="Assets/ExporTerrain.cs" />
      <None Include="Assets/ScaleElevations.txt" />
      <None Include="Assets/terrainData.txt" />
     <Reference Include="UnityEngine">
