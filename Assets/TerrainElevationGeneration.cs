@@ -9,15 +9,15 @@ using System.Linq;
 public class TerrainElevationGeneration : MonoBehaviour {
 
 
-     public int terrainSize = 10000;
+     public int terrainSize;
 
-     public int heightmapResolution = 513;
+     public int heightmapResolution;
      private List<Location> vertexCoordinatesList;
 
-     private Location location;
-     public float highestElevation;
-     public float lowestElevation;
-
+     public Location location;
+     private float highestElevation;
+     private float lowestElevation;
+     public String fileName;
      private Terrain terrain;
 
     private CSVHandler csvHandler;
@@ -25,15 +25,11 @@ public class TerrainElevationGeneration : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
 
-        double lat = 27.98865069515548;
-        double lon = 86.92544716876068;
-        location = new Location(lat, lon);
-        csvHandler = new CSVHandler("everest512Elevations", heightmapResolution-1);
-        //generateElevations();
+        csvHandler = new CSVHandler(fileName, heightmapResolution-1);
+        generateElevations();
         generateTerrain();
         ExportTerrain exporter= new ExportTerrain(terrain);
         exporter.Export();
- 
     }
 
     // Update is called once per frame
@@ -43,8 +39,8 @@ public class TerrainElevationGeneration : MonoBehaviour {
     }
 
     private void generateElevations() {
-        vertexCoordinatesList = getVertexCoordinates();
-        APIHandler aPIHandler = new APIHandler(vertexCoordinatesList, heightmapResolution);
+        getVertexCoordinates();
+        APIHandler aPIHandler = new APIHandler(vertexCoordinatesList, heightmapResolution-1);
         ElevationResult[][] allElevations = aPIHandler.getElevations();
         csvHandler.WriteCSV(allElevations);
     }
@@ -63,19 +59,6 @@ public class TerrainElevationGeneration : MonoBehaviour {
         terrainData.size = new Vector3(terrainSize, highestElevation, terrainSize);
 
         terrainData.SetHeights(0, 0, calculateHeigths(elevations));
-    }
-
-    private float[,] getHeigthsFromImport() {
-        StreamReader reader = new StreamReader(Application.dataPath + "/terrainData.txt");
-
-        float[,]    heigths = new float[heightmapResolution, heightmapResolution];
-        for (int i = 0; i < heightmapResolution && !reader.EndOfStream ; i++) {
-            for (int j = 0; j < heightmapResolution && !reader.EndOfStream; j++) {
-                    string line = reader.ReadLine();
-                    heigths[i,j] = float.Parse(line);
-            }
-        }
-        return heigths;
     }
 
     private float[,] calculateHeigths(ElevationResult[,] elevations) {
@@ -103,13 +86,21 @@ public class TerrainElevationGeneration : MonoBehaviour {
         return result;
     }
 
-    private List<Location> getVertexCoordinates() {
-        var distance = Math.Sqrt(Math.Pow((terrainSize/2), 2) + Math.Pow((terrainSize/2), 2));
-        List<Location> vertex = new List<Location>();
-        vertex.Add(Location.calculateNewCoordinates(location, 315.0, distance));
-        vertex.Add(Location.calculateNewCoordinates(location, 225.0, distance));
-        vertex.Add(Location.calculateNewCoordinates(location, 45.0, distance));
-        vertex.Add(Location.calculateNewCoordinates(location, 135.0, distance));
-        return vertex;
-    }
+    private void getVertexCoordinates() {
+            vertexCoordinatesList = new List<Location>();
+            var distance = Math.Sqrt(Math.Pow((terrainSize/2), 2) + Math.Pow((terrainSize/2), 2));
+
+            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 315.0, distance));
+            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 225.0, distance));
+            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 45.0, distance));
+            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 135.0, distance));
+
+            if (heightmapResolution > 513) {
+                vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 270.0, distance));
+                vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 0.0, distance));
+                vertexCoordinatesList.Add(location);
+                vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 180.0, distance));
+                vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 90.0, distance));
+            }
+        }
 }

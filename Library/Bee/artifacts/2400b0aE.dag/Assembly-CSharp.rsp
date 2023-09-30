@@ -347,12 +347,13 @@
 -r:"Library/Bee/artifacts/2400b0aE.dag/UnityEngine.UI.ref.dll"
 "Assets/APIHandler.cs"
 "Assets/CSVHandler.cs"
+"Assets/CoordianteConverter.cs"
+"Assets/ElevationGenerator.cs"
 "Assets/ElevationResult.cs"
 "Assets/ExporTerrain.cs"
 "Assets/Location.cs"
-"Assets/SampleTerrainGeneration.cs"
 "Assets/TerrainElevationGeneration.cs"
-"Assets/TerraindReader.cs"
+"Assets/TerrainManager.cs"
 -langversion:9.0
 
 /deterministic

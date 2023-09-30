@@ -13,7 +13,7 @@ public class CSVHandler {
     private int terrainSize;
 
     public CSVHandler (string fileName, int terrainSize) {
-        this.fileName = Application.dataPath + $"/{fileName}.csv";
+        this.fileName = Application.dataPath + $"/TerrainElevations/{fileName}.csv";
         this.terrainSize = terrainSize;
         highestElevation = 0.0;
         lowestElevation = Double.MaxValue;

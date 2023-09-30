@@ -17,18 +17,46 @@ public class APIHandler {
         this.terrainSize = terrainSize;
     }
 
+    
+    
     public ElevationResult[][] getElevations() {
+
         ElevationResult[][] allElevations = new ElevationResult[terrainSize][];
-        ElevationResult[] leftElevations = elevationsBetweenCoordinates(vertexLocationsList[0], vertexLocationsList[1]);
-        ElevationResult[] rightElevations = elevationsBetweenCoordinates(vertexLocationsList[2], vertexLocationsList[3]);
+        ElevationResult[] leftElevations;
+        ElevationResult[] rightElevations;
+        ElevationResult[] middleElevations = null;
+
+        if (terrainSize <= 512) {
+
+           leftElevations = elevationsBetweenCoordinates(vertexLocationsList[0], vertexLocationsList[1], terrainSize);
+           rightElevations = elevationsBetweenCoordinates(vertexLocationsList[2], vertexLocationsList[3], terrainSize);
+
+        } else {
+
+            leftElevations = generateElevations(vertexLocationsList[0], vertexLocationsList[4], vertexLocationsList[1]);
+            rightElevations = generateElevations(vertexLocationsList[2], vertexLocationsList[8], vertexLocationsList[3]);
+            middleElevations = generateElevations(vertexLocationsList[5], vertexLocationsList[6], vertexLocationsList[7]);
+
+        }
+
         for(int i = 0; i < terrainSize; i++) {
-            allElevations[i] = elevationsBetweenCoordinates(leftElevations[i].location, rightElevations[i].location);
+            if (terrainSize <= 512) {
+                allElevations[i] = elevationsBetweenCoordinates(leftElevations[i].location, rightElevations[i].location, terrainSize);
+            } else {
+                allElevations[i] = generateElevations(leftElevations[i].location, middleElevations[i].location, rightElevations[i].location);
+            }
         }
         return allElevations;
     }
 
-    private ElevationResult[] elevationsBetweenCoordinates(Location firstCoordinate, Location secondCoordinate) {
-         string url = $"https://maps.googleapis.com/maps/api/elevation/json?path={firstCoordinate.lat},{firstCoordinate.lng}|{secondCoordinate.lat},{secondCoordinate.lng}&samples=512&key={apiKey}";
+    private ElevationResult[] generateElevations(Location left, Location middle, Location right) {
+        ElevationResult[] firstHalf = elevationsBetweenCoordinates(left, middle);
+        ElevationResult[] secondHalf = elevationsBetweenCoordinates(middle, right);
+        return firstHalf.Concat(secondHalf).ToArray();
+    }
+
+    private ElevationResult[] elevationsBetweenCoordinates(Location firstCoordinate, Location secondCoordinate, int cantPoints = 512) {
+         string url = $"https://maps.googleapis.com/maps/api/elevation/json?path={firstCoordinate.lat},{firstCoordinate.lng}|{secondCoordinate.lat},{secondCoordinate.lng}&samples={cantPoints}&key={apiKey}";
          
          using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
             webRequest.SendWebRequest();
