@@ -8,20 +8,21 @@ using System.Linq;
 
 public static class CSVHandler {
 
+    private static string folderPath = Application.dataPath + $"/TerrainElevations/";
     public static void WriteCSV(string fileName, ElevationResult[][] elevationData) {
 
-        TextWriter tw = new StreamWriter(Application.dataPath + $"/TerrainElevations/{fileName}", false);
-        tw.WriteLine("Latitude, Longitude, Elevation");
-        tw.Close();
-
-        tw = new StreamWriter(fileName, true);
+        TextWriter writer  = new StreamWriter(folderPath . fileName, false);
+        writer.WriteLine("Latitude, Longitude, Elevation");
+        writer.Close();
+ 
+        writer = new StreamWriter(fileName, true);
 
         for(int i = 0; i < elevationData.Length; i++) {
             for(int j = 0; j < elevationData[i].Length; j++) {
-                tw.WriteLine(elevationData[i][j].toString());
+                writer.WriteLine(elevationData[i][j].toString());
             }
         }
-        tw.Close();
+        writer.Close();
     }
 
     public static TerrainElevationData ReadCSV(string fileName, int terrainSize) {
@@ -30,7 +31,7 @@ public static class CSVHandler {
         double highestElevation = Double.MaxValue * -1;
         double lowestElevation = Double.MaxValue;
         
-        StreamReader reader = new StreamReader(Application.dataPath + $"/TerrainElevations/{fileName}");
+        StreamReader reader = new StreamReader(folderPath . fileName);
         string line = reader.ReadLine();
         for (int i = 0; i < terrainSize && !reader.EndOfStream ; i++) {
             for (int j = 0; j < terrainSize && !reader.EndOfStream; j++) {
@@ -51,12 +52,14 @@ public static class CSVHandler {
             }
         }
 
+        reader.Close();
+
         return new TerrainElevationData(highestElevation, lowestElevation, elevationResults);
     }
 
     public static string getSavedElevationsFileName(Location location, int heightmapResolution, int terrainSize) {
         string elevationsFile = "";
-        string[] archivosCSV = Directory.GetFiles(Application.dataPath + "/TerrainElevations")
+        string[] archivosCSV = Directory.GetFiles(folderPath)
                     .Where(file => file.ToLower().EndsWith(".csv"))
                     .Select(file => Path.GetFileName(file))
                     .ToArray();
@@ -73,14 +76,14 @@ public static class CSVHandler {
     private static bool areElevationsInFile(string archivo, Location location, int heightmapResolution, int terrainSize) {
 
         bool isInRange = false;
-        string path = Path.Combine(Application.dataPath + "/TerrainElevations", archivo);
+        string path = Path.Combine(folderPath, archivo);
 
         if (File.Exists(path)) {
             // Lee las líneas específicas y obtiene las coordenadas
             string[] lineas = File.ReadAllLines(path);
 
             if((lineas.Length-1)/(heightmapResolution-1) == heightmapResolution-1) {
-                Debug.Log(archivo);
+                
                  List<Location> vertexList = new List<Location>();
                  vertexList.Add(getLocationFromline(lineas[1]));
                  vertexList.Add(getLocationFromline(lineas[heightmapResolution]));

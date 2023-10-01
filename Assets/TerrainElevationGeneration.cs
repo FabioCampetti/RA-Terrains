@@ -7,7 +7,6 @@ using System.Globalization;
 
 public class TerrainElevationGeneration : MonoBehaviour {
 
-
      public int terrainSize;
 
      public int heightmapResolution;
@@ -25,8 +24,7 @@ public class TerrainElevationGeneration : MonoBehaviour {
 
         generateElevations();
         generateTerrain();
-        //ExportTerrain exporter= new ExportTerrain(terrain);
-        //exporter.Export();
+        (new ExportTerrain(terrain)).Export();
     }
 
    private void generateElevations() {
@@ -34,9 +32,8 @@ public class TerrainElevationGeneration : MonoBehaviour {
         string elevationsFile = CSVHandler.getSavedElevationsFileName(location, heightmapResolution, terrainSize);
         if (string.IsNullOrWhiteSpace(elevationsFile)) {
             getVertexCoordinates();
-            ElevationResult[][] allElevations = APIHandler.getElevations(vertexCoordinatesList, heightmapResolution-1);
             fileName += ".csv"; 
-            CSVHandler.WriteCSV(fileName, allElevations);
+            CSVHandler.WriteCSV(fileName, APIHandler.getElevations(vertexCoordinatesList, heightmapResolution-1));
 
         } else {
 
@@ -51,7 +48,6 @@ public class TerrainElevationGeneration : MonoBehaviour {
 
         TerrainElevationData  terrainElevationData = CSVHandler.ReadCSV(fileName, heightmapResolution-1);
         
-        Debug.Log(terrainElevationData.elevationResults.Length);
         terrainData.heightmapResolution = heightmapResolution;
 
         highestElevation = (float) terrainElevationData.highestElevation;
@@ -87,6 +83,7 @@ public class TerrainElevationGeneration : MonoBehaviour {
     }
 
     private void getVertexCoordinates() {
+
             vertexCoordinatesList = new List<Location>();
             var distance = Math.Sqrt(Math.Pow((terrainSize/2), 2) + Math.Pow((terrainSize/2), 2));
 
@@ -102,5 +99,5 @@ public class TerrainElevationGeneration : MonoBehaviour {
                 vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 180.0, distance));
                 vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 90.0, distance));
             }
-        }
+    }
 }
