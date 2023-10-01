@@ -354,6 +354,7 @@
 "Assets/ElevationResult.cs"
 "Assets/ExporTerrain.cs"
 "Assets/Location.cs"
+"Assets/TerrainElevationData.cs"
 "Assets/TerrainElevationGeneration.cs"
 "Assets/TerrainManager.cs"
 -langversion:9.0

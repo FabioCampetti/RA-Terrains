@@ -38,7 +38,7 @@ public class APIHandler {
             middleElevations = generateElevations(vertexLocationsList[5], vertexLocationsList[6], vertexLocationsList[7]);
 
         }
-
+         
         for(int i = 0; i < terrainSize; i++) {
             if (terrainSize <= 512) {
                 allElevations[i] = elevationsBetweenCoordinates(leftElevations[i].location, rightElevations[i].location, terrainSize);

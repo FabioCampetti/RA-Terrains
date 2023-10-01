@@ -3,28 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CoordianteConverter {
-    
 
-    // Escala para convertir grados de latitud y longitud en unidades de Unity
-    private const float terrainScale = 10000f;
+    public static Vector2 ConvertToUnityCoordinates(Location location, List<Location> vertexCoordinatesList, int terrainsize) {
 
-    public CoordianteConverter() {
-    }
+        double latitude = location.lat;
+        double longitude = location.lng;
 
-    public static Vector2 ConvertToUnityCoordinates(double latitude, double longitude, List<Location> vertexCoordinatesList, int terrainsize) {
-
-        double lat0 = vertexCoordinatesList[2].lat;
-        double lon0 = vertexCoordinatesList[2].lng;
-        double lat1 = vertexCoordinatesList[6].lat;
-        double lon1 = vertexCoordinatesList[6].lng;
+        double lat0 = vertexCoordinatesList[1].lat;
+        double lon0 = vertexCoordinatesList[1].lng;
+        double lat1 = vertexCoordinatesList[2].lat;
+        double lon1 = vertexCoordinatesList[2].lng;
 
         // Calcular las diferencias entre la latitud/longitud actual y el centro del terreno
         double latDifference = (latitude - lat0)/(lat1 - lat0);
         double lonDifference = (longitude - lon0)/(lon1 - lon0);
         
         // Calcular las coordenadas dentro del terreno en unidades de Unity
-        float terrainX = (float)(lonDifference * terrainScale);
-        float terrainZ = (float)(latDifference * terrainScale);
+        float terrainX = (float)(lonDifference * terrainsize);
+        float terrainZ = (float)(latDifference * terrainsize);
 
         return new Vector2(terrainX, terrainZ);
     }

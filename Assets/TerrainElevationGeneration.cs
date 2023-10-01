@@ -4,7 +4,6 @@ using UnityEngine;
 using System.IO;
 using System;
 using System.Globalization;
-using System.Linq;
 
 public class TerrainElevationGeneration : MonoBehaviour {
 
@@ -17,32 +16,33 @@ public class TerrainElevationGeneration : MonoBehaviour {
      public Location location;
      private float highestElevation;
      private float lowestElevation;
-     public String fileName;
+     public string fileName;
      private Terrain terrain;
 
-    private CSVHandler csvHandler;
 
     // Start is called before the first frame update
     void Start() {
 
-        csvHandler = new CSVHandler(fileName, heightmapResolution-1);
         generateElevations();
         generateTerrain();
-        ExportTerrain exporter= new ExportTerrain(terrain);
-        exporter.Export();
+        //ExportTerrain exporter= new ExportTerrain(terrain);
+        //exporter.Export();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+   private void generateElevations() {
 
-    private void generateElevations() {
-        getVertexCoordinates();
-        APIHandler aPIHandler = new APIHandler(vertexCoordinatesList, heightmapResolution-1);
-        ElevationResult[][] allElevations = aPIHandler.getElevations();
-        csvHandler.WriteCSV(allElevations);
+        string elevationsFile = CSVHandler.getSavedElevationsFileName(location, heightmapResolution, terrainSize);
+        if (string.IsNullOrWhiteSpace(elevationsFile)) {
+            getVertexCoordinates();
+            APIHandler aPIHandler = new APIHandler(vertexCoordinatesList, heightmapResolution-1);
+            ElevationResult[][] allElevations = aPIHandler.getElevations();
+            fileName += ".csv"; 
+            CSVHandler.WriteCSV(fileName, allElevations);
+
+        } else {
+            
+            fileName = elevationsFile;
+        }
     }
 
     private void generateTerrain() {
@@ -50,15 +50,16 @@ public class TerrainElevationGeneration : MonoBehaviour {
         terrain = GetComponent<Terrain>();
         TerrainData terrainData = terrain.terrainData;
 
-
-        ElevationResult[,] elevations = csvHandler.ReadCSV();
+        TerrainElevationData  terrainElevationData = CSVHandler.ReadCSV(fileName, heightmapResolution-1);
+        
+        Debug.Log(terrainElevationData.elevationResults.Length);
         terrainData.heightmapResolution = heightmapResolution;
 
-        highestElevation = (float) csvHandler.highestElevation;
-        lowestElevation = (float) csvHandler.lowestElevation;
+        highestElevation = (float) terrainElevationData.highestElevation;
+        lowestElevation = (float) terrainElevationData.lowestElevation;
         terrainData.size = new Vector3(terrainSize, highestElevation, terrainSize);
 
-        terrainData.SetHeights(0, 0, calculateHeigths(elevations));
+        terrainData.SetHeights(0, 0, calculateHeigths(terrainElevationData.elevationResults));
     }
 
     private float[,] calculateHeigths(ElevationResult[,] elevations) {
