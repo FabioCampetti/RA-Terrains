@@ -11,7 +11,7 @@ public static class CSVHandler {
     private static string folderPath = Application.dataPath + $"/TerrainElevations/";
     public static void WriteCSV(string fileName, ElevationResult[][] elevationData) {
 
-        TextWriter writer  = new StreamWriter(folderPath . fileName, false);
+        TextWriter writer  = new StreamWriter($"{folderPath}{fileName}", false);
         writer.WriteLine("Latitude, Longitude, Elevation");
         writer.Close();
  
@@ -31,7 +31,7 @@ public static class CSVHandler {
         double highestElevation = Double.MaxValue * -1;
         double lowestElevation = Double.MaxValue;
         
-        StreamReader reader = new StreamReader(folderPath . fileName);
+        StreamReader reader = new StreamReader($"{folderPath}{fileName}");
         string line = reader.ReadLine();
         for (int i = 0; i < terrainSize && !reader.EndOfStream ; i++) {
             for (int j = 0; j < terrainSize && !reader.EndOfStream; j++) {
