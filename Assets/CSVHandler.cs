@@ -6,7 +6,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 
-public class CSVHandler {
+public static class CSVHandler {
 
     public static void WriteCSV(string fileName, ElevationResult[][] elevationData) {
 

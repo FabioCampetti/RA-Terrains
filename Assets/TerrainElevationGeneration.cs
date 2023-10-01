@@ -34,13 +34,12 @@ public class TerrainElevationGeneration : MonoBehaviour {
         string elevationsFile = CSVHandler.getSavedElevationsFileName(location, heightmapResolution, terrainSize);
         if (string.IsNullOrWhiteSpace(elevationsFile)) {
             getVertexCoordinates();
-            APIHandler aPIHandler = new APIHandler(vertexCoordinatesList, heightmapResolution-1);
-            ElevationResult[][] allElevations = aPIHandler.getElevations();
+            ElevationResult[][] allElevations = APIHandler.getElevations(vertexCoordinatesList, heightmapResolution-1);
             fileName += ".csv"; 
             CSVHandler.WriteCSV(fileName, allElevations);
 
         } else {
-            
+
             fileName = elevationsFile;
         }
     }

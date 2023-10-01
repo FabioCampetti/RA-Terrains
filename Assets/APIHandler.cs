@@ -5,21 +5,11 @@ using UnityEngine.Networking;
 using System;
 using System.Linq;
 
-public class APIHandler {
+public static class APIHandler {
 
-    private string apiKey = "";
-    private List<Location> vertexLocationsList;
-
-    private int terrainSize;
-
-    public APIHandler(List<Location> vertexLocationsList, int terrainSize) {
-        this.vertexLocationsList = vertexLocationsList;
-        this.terrainSize = terrainSize;
-    }
-
+    private const string apiKey = "";
     
-    
-    public ElevationResult[][] getElevations() {
+    public static ElevationResult[][] getElevations(List<Location> vertexLocationsList, int terrainSize) {
 
         ElevationResult[][] allElevations = new ElevationResult[terrainSize][];
         ElevationResult[] leftElevations;
@@ -49,13 +39,13 @@ public class APIHandler {
         return allElevations;
     }
 
-    private ElevationResult[] generateElevations(Location left, Location middle, Location right) {
+    private static ElevationResult[] generateElevations(Location left, Location middle, Location right) {
         ElevationResult[] firstHalf = elevationsBetweenCoordinates(left, middle);
         ElevationResult[] secondHalf = elevationsBetweenCoordinates(middle, right);
         return firstHalf.Concat(secondHalf).ToArray();
     }
 
-    private ElevationResult[] elevationsBetweenCoordinates(Location firstCoordinate, Location secondCoordinate, int cantPoints = 512) {
+    private static ElevationResult[] elevationsBetweenCoordinates(Location firstCoordinate, Location secondCoordinate, int cantPoints = 512) {
          string url = $"https://maps.googleapis.com/maps/api/elevation/json?path={firstCoordinate.lat},{firstCoordinate.lng}|{secondCoordinate.lat},{secondCoordinate.lng}&samples={cantPoints}&key={apiKey}";
          
          using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
