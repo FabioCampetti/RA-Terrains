@@ -2,9 +2,7 @@
 // C # manual conversion work by Yun Kyu Choi
  
 using UnityEngine;
-using UnityEditor;
 using System;
-using System.Collections;
 using System.IO;
 using System.Text;
  
@@ -17,11 +15,6 @@ class ExportTerrain {
  
    public TerrainData terrainData;
    public Vector3 terrainPos;
- 
-   int tCount;
-   int counter;
-   int totalCount;
-   int progressUpdateInterval = 10000;
  
    public ExportTerrain(Terrain terrain) {
          terrainData = terrain.terrainData;
@@ -102,19 +95,19 @@ class ExportTerrain {
       }
  
       // Export to .obj
-      StreamWriter sw = new StreamWriter(fileName);
+      StreamWriter sw = new(fileName);
       try
       {
  
          sw.WriteLine("# Unity terrainData OBJ File");
  
+         // Agregar un comentario indicando el tamaño del terreno
+        sw.WriteLine($"# Tamaño del terreno: {meshScale.x}, {meshScale.y}, {meshScale.z}");
          // Write vertices
          System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-         counter = tCount = 0;
-         totalCount = (tVertices.Length * 2 + (saveFormat == SaveFormat.Triangles ? tPolys.Length / 3 : tPolys.Length / 4)) / progressUpdateInterval;
          for (int i = 0; i < tVertices.Length; i++)
          {
-            StringBuilder sb = new StringBuilder("v ", 20);
+            StringBuilder sb = new("v ", 20);
             // StringBuilder stuff is done this way because it's faster than using the "{0} {1} {2}"etc. format
             // Which is important when you're exporting huge terrainDatas.
             sb.Append(tVertices[i].x.ToString()).Append(" ").
@@ -125,7 +118,7 @@ class ExportTerrain {
          // Write UVs
          for (int i = 0; i < tUV.Length; i++)
          {
-            StringBuilder sb = new StringBuilder("vt ", 22);
+            StringBuilder sb = new("vt ", 22);
             sb.Append(tUV[i].x.ToString()).Append(" ").
                Append(tUV[i].y.ToString());
             sw.WriteLine(sb);
@@ -135,7 +128,7 @@ class ExportTerrain {
             // Write triangles
             for (int i = 0; i < tPolys.Length; i += 3)
             {
-               StringBuilder sb = new StringBuilder("f ", 43);
+               StringBuilder sb = new("f ", 43);
                sb.Append(tPolys[i] + 1).Append("/").Append(tPolys[i] + 1).Append(" ").
                   Append(tPolys[i + 1] + 1).Append("/").Append(tPolys[i + 1] + 1).Append(" ").
                   Append(tPolys[i + 2] + 1).Append("/").Append(tPolys[i + 2] + 1);
@@ -147,7 +140,7 @@ class ExportTerrain {
             // Write quads
             for (int i = 0; i < tPolys.Length; i += 4)
             {
-               StringBuilder sb = new StringBuilder("f ", 57);
+               StringBuilder sb = new("f ", 57);
                sb.Append(tPolys[i] + 1).Append("/").Append(tPolys[i] + 1).Append(" ").
                   Append(tPolys[i + 1] + 1).Append("/").Append(tPolys[i + 1] + 1).Append(" ").
                   Append(tPolys[i + 2] + 1).Append("/").Append(tPolys[i + 2] + 1).Append(" ").

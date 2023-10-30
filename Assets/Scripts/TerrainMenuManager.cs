@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -21,20 +19,13 @@ public class TerrainMenuManager : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
 
-
         latitudInputField = transform.Find("Latitude").GetComponent<TMP_InputField>();
         longitudInputField = transform.Find("Longitude").GetComponent<TMP_InputField>();
         terrainSizeInputField = transform.Find("TerrainSize").GetComponent<TMP_InputField>();
         fileNameInputField = transform.Find("File").GetComponent<TMP_InputField>();
         dropdown = transform.Find("Dropdown").GetComponent<TMP_Dropdown>();
-        generateTerrainButton = transform.Find("ADD").GetComponent<Button>();
+        generateTerrainButton = transform.Find("ADDTerrain").GetComponent<Button>();
         generateTerrainButton.onClick.AddListener(OnGenerateTerrainButtonClick);
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
         
     }
 
@@ -57,7 +48,6 @@ public class TerrainMenuManager : MonoBehaviour {
     terrainManager.generateTerrain();
     terrainManager.ExportTerrain();
 
-    TerrainController terrainController = new TerrainController();
-    terrainController.LoadAndAddObject(terrainManager.fileName);
-}
+    new TerrainController().LoadAndAddObject(Application.dataPath + $"/TerrainObjects/{terrainManager.fileName}.obj");
+    }
 }

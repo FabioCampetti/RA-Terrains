@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using System;
-using System.Globalization;
 using System.Linq;
 
 public static class CSVHandler {
@@ -28,8 +25,8 @@ public static class CSVHandler {
     public static TerrainElevationData ReadCSV(string fileName, int terrainSize) {
 
         ElevationResult[,] elevationResults = new ElevationResult[terrainSize, terrainSize];
-        double highestElevation = Double.MaxValue * -1;
-        double lowestElevation = Double.MaxValue;
+        double highestElevation = double.MaxValue * -1;
+        double lowestElevation = double.MaxValue;
         
         StreamReader reader = new StreamReader($"{folderPath}{fileName}");
         string line = reader.ReadLine();
@@ -84,11 +81,13 @@ public static class CSVHandler {
 
             if((lineas.Length-1)/(heightmapResolution-1) == heightmapResolution-1) {
                 
-                 List<Location> vertexList = new List<Location>();
-                 vertexList.Add(getLocationFromline(lineas[1]));
-                 vertexList.Add(getLocationFromline(lineas[heightmapResolution]));
-                 vertexList.Add(getLocationFromline(lineas[(heightmapResolution-1) * (heightmapResolution-1) - (heightmapResolution-1)]));
-                 vertexList.Add(getLocationFromline(lineas[(heightmapResolution-1) * (heightmapResolution-1)]));
+                 List<Location> vertexList = new List<Location>
+                 {
+                     getLocationFromline(lineas[1]),
+                     getLocationFromline(lineas[heightmapResolution]),
+                     getLocationFromline(lineas[(heightmapResolution - 1) * (heightmapResolution - 1) - (heightmapResolution - 1)]),
+                     getLocationFromline(lineas[(heightmapResolution - 1) * (heightmapResolution - 1)])
+                 };
 
                  Vector2 positonInUnity = CoordianteConverter.ConvertToUnityCoordinates(location, vertexList, terrainSize);
                 

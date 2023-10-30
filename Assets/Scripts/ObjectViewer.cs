@@ -1,7 +1,6 @@
 using UnityEngine;
 
-public class ObjectViewer : MonoBehaviour
-{
+public class ObjectViewer : MonoBehaviour {
     private bool isRotating = false;
     private Vector3 lastMousePosition;
 

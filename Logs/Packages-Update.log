@@ -1,5 +1,5 @@
 
-=== Fri Sep 29 23:31:01 2023
+=== Fri Oct 27 21:42:35 2023
 
 Packages were changed.
 Update Mode: mergeDefaultDependencies
@@ -37,29 +37,6 @@ The following packages were added:
   com.unity.modules.wind@1.0.0
   com.unity.modules.xr@1.0.0
 The following packages were updated:
-  com.unity.collab-proxy from version 1.13.5 to 2.0.5
+  com.unity.collab-proxy from version 1.13.5 to 2.1.0
   com.unity.timeline from version 1.6.2 to 1.7.5
-  com.unity.visualscripting from version 1.7.6 to 1.8.0
-
-=== Fri Oct  6 16:13:36 2023
-
-Packages were changed.
-Update Mode: updateDependencies
-
-The following packages were added:
-  com.unity.ai.navigation@1.1.4
-The following packages were updated:
-  com.unity.xr.arcore from version 4.2.8 to 5.0.7
-  com.unity.xr.arfoundation from version 4.2.8 to 5.0.7
-
-=== Fri Oct 27 17:14:00 2023
-
-Packages were changed.
-Update Mode: updateDependencies
-
-The following packages were updated:
-  com.unity.ai.navigation from version 1.1.4 to 1.1.5
-  com.unity.collab-proxy from version 2.0.5 to 2.1.0
-  com.unity.visualscripting from version 1.8.0 to 1.9.1
-  com.unity.xr.arcore from version 5.0.7 to 5.1.0
-  com.unity.xr.arfoundation from version 5.0.7 to 5.1.0
+  com.unity.visualscripting from version 1.7.6 to 1.9.1

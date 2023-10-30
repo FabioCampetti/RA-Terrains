@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 using System;
-using System.Globalization;
 
 public class TerrainElevationGeneration : MonoBehaviour {
 
@@ -19,9 +16,6 @@ public class TerrainElevationGeneration : MonoBehaviour {
      public Terrain terrain;
 
      private string csvFileName;
-
-    void Start() {
-    }
 
     public TerrainElevationGeneration (Location location, int terrainSize, int heightmapResolution, string fileName) {
         this.location = location;
@@ -64,7 +58,7 @@ public class TerrainElevationGeneration : MonoBehaviour {
     }
 
     public void ExportTerrain() {
-        (new ExportTerrain(terrain)).Export(fileName);
+        new ExportTerrain(terrain).Export(fileName);
         terrain.enabled = false;
     }
 
@@ -95,20 +89,21 @@ public class TerrainElevationGeneration : MonoBehaviour {
 
     private void getVertexCoordinates() {
 
-            vertexCoordinatesList = new List<Location>();
-            var distance = Math.Sqrt(Math.Pow((terrainSize/2), 2) + Math.Pow((terrainSize/2), 2));
+        vertexCoordinatesList = new List<Location>();
+        
+        var distance = Math.Sqrt(Math.Pow(terrainSize/2, 2) + Math.Pow(terrainSize/2, 2));
 
-            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 315.0, distance));
-            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 225.0, distance));
-            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 45.0, distance));
-            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 135.0, distance));
+        vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 315.0, distance));
+        vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 225.0, distance));
+        vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 45.0, distance));
+        vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 135.0, distance));
 
-            if (heightmapResolution > 513) {
-                vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 270.0, distance));
-                vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 0.0, distance));
-                vertexCoordinatesList.Add(location);
-                vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 180.0, distance));
-                vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 90.0, distance));
-            }
+        if (heightmapResolution > 513) {
+            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 270.0, distance));
+            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 0.0, distance));
+            vertexCoordinatesList.Add(location);
+            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 180.0, distance));
+            vertexCoordinatesList.Add(Location.calculateNewCoordinates(location, 90.0, distance));
+        }
     }
 }

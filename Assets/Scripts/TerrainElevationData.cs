@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class TerrainElevationData {
     public double highestElevation { get; set; }
     public double lowestElevation { get; set; }
